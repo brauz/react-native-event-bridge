@@ -193,6 +193,8 @@ public class MSREventBridgeModule extends ReactContextBaseJavaModule implements 
    * Emits and event to a an event subscriber within a component that lifes within the components tree
    * managed by the passed activity
    * Example: EventBridgeModule.emitEventForActivity(this, (MSREventBridgeInstanceManagerProvider)this.getContext(), "eventName", data);
+   *
+   * Warning: emitEventForActivity will be deprecated soon, please use emitEventForView() instead.
    */
   static public void emitEventForActivity(Activity activity, MSREventBridgeInstanceManagerProvider instanceManagerProvider, final String name, @Nullable WritableMap info) {
     final MSREventBridgeModule module = MSREventBridgeModule.getEventBridgeModule(instanceManagerProvider);
@@ -203,30 +205,18 @@ public class MSREventBridgeModule extends ReactContextBaseJavaModule implements 
    * Emits and event to a an event subscriber within a component that lifes within the components tree
    * managed by the passed activity
    * Example: EventBridgeModule.emitEventForActivity(this, "eventName", data);
+   *
+   * Warning: emitEventForActivity will be deprecated soon, please use emitEventForView() instead.
    */
   public void emitEventForActivity(Activity activity, final String name, @Nullable WritableMap info)  {
     // Get the root view
     ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);
-    View view = findRootView(contentView);
-    if (!(view instanceof RootView)) {
+    View view = findReactRootView(contentView);
+    if (!(view instanceof ReactRootView)) {
       return;
     }
 
-    // React tag is the identifier to be able to detect in ReactNativewhich component should receive
-    // the event
-    final int reactTag = view.getId();
-
-    Bundle bundle = new Bundle();
-    bundle.putInt(EventBridgeModuleEventReactTagKey, reactTag);
-    bundle.putString(EventBridgeModuleEventNameKey, name);
-    if (info != null) {
-      bundle.putBundle(EventBridgeModuleEventInfoKey, Arguments.toBundle(info));
-    }
-
-    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(activity);
-    Intent customEvent= new Intent(EventBridgeModuleIntentEventName);
-    customEvent.putExtra(EventBridgeModuleIntentEventDataKey, bundle);
-    localBroadcastManager.sendBroadcast(customEvent);
+    emitEventForView((ReactRootView) view, name, info);
   }
 
   /**
@@ -278,13 +268,13 @@ public class MSREventBridgeModule extends ReactContextBaseJavaModule implements 
    * Returns the descendant of the given view which is the root of the React Native views
    */
   @Nullable
-  private View findRootView(ViewGroup parent) {
+  private View findReactRootView(ViewGroup parent) {
     for (int i = 0; i < parent.getChildCount(); i++) {
       View child = parent.getChildAt(i);
-      if (child instanceof RootView) {
+      if (child instanceof ReactRootView) {
         return child;
       } else if (child instanceof ViewGroup) {
-        child = findRootView((ViewGroup) child);
+        child = findReactRootView((ViewGroup) child);
         if (child != null) {
           return child;
         }
