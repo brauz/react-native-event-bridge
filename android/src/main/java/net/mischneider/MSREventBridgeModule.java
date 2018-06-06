@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -233,7 +234,7 @@ public class MSREventBridgeModule extends ReactContextBaseJavaModule implements 
    * managed by the passed view
    * Example: EventBridgeModule.emitEventForView(view, (MSREventBridgeInstanceManagerProvider)this.getContext(), "eventName", data);
    */
-  static public void emitEventForView(View view, MSREventBridgeInstanceManagerProvider instanceManagerProvider, final String name, @Nullable WritableMap info) {
+  static public void emitEventForView(ReactRootView view, MSREventBridgeInstanceManagerProvider instanceManagerProvider, final String name, @Nullable WritableMap info) {
     final MSREventBridgeModule module = MSREventBridgeModule.getEventBridgeModule(instanceManagerProvider);
     module.emitEventForView(view, name, info);
   }
@@ -243,12 +244,7 @@ public class MSREventBridgeModule extends ReactContextBaseJavaModule implements 
    * managed by the passed view
    * Example: EventBridgeModule.emitEventForView(view, "eventName", data);
    */
-  public void emitEventForView(View view, final String name, @Nullable WritableMap info)  {
-
-    if (!(view instanceof RootView)) {
-      return;
-    }
-
+  public void emitEventForView(ReactRootView view, final String name, @Nullable WritableMap info)  {
     // React tag is the identifier to be able to detect in ReactNative which component should receive
     // the event
     final int reactTag = view.getId();
