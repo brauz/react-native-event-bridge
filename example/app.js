@@ -16,6 +16,8 @@ import {
   Alert,
 } from 'react-native'; // Would yell at us as we don't use it for now
 
+import PropTypes from 'prop-types'
+
 import type EmitterSubscription from 'EmitterSubscription';
 
 /* eslint-disable */ import EventBridge, {
@@ -57,7 +59,7 @@ class HeaderComponent extends Component {
   _eventSubscription: ?EmitterSubscription;
 
   static contextTypes = {
-    rootTag: React.PropTypes.number,
+    rootTag: PropTypes.number,
   };
 
   componentDidMount() {
@@ -120,7 +122,7 @@ export default class App extends Component {
   state: AppState;
 
   static contextTypes = {
-    rootTag: React.PropTypes.number,
+    rootTag: PropTypes.number,
   };
 
   constructor(props: AppProps) {

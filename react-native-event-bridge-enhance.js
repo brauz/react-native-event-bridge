@@ -14,12 +14,14 @@ import type EmitterSubscription from 'EmitterSubscription';
 
 import EventBridge from './index';
 
+import PropTypes from 'prop-types'
+
 const enhanceForEventsSupport = (ComposedComponent: React.Component<any>) => {
   const _key = 'EventsBridgeEnhance_Listeners';
 
   return class extends (ComposedComponent: any) {
     static contextTypes = {
-      rootTag: React.PropTypes.number,
+      rootTag: PropTypes.number,
     };
 
     componentWillUnmount() {
@@ -56,7 +58,7 @@ const enhanceForEventsSupportEnhanced = (ComposedComponent: any) =>
     _subscribableSubscriptions: ?Array<EmitterSubscription>;
 
     static contextTypes = {
-      rootTag: React.PropTypes.number,
+      rootTag: PropTypes.number,
     };
 
     componentWillMount() {
@@ -88,7 +90,7 @@ function enhanceForEventsSupportDecorator() {
 
     return class extends (DecoratedComponent: any) {
       static contextTypes = {
-        rootTag: React.PropTypes.number,
+        rootTag: PropTypes.number,
       };
 
       componentWillUnmount() {
